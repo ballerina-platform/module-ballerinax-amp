@@ -21,13 +21,11 @@ import io.ballerina.observe.trace.jaeger.sampler.RateLimitingSampler;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.observability.tracer.spi.TracerProvider;
-import io.grpc.ManagedChannel;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelProvider;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
@@ -47,6 +45,7 @@ public class JaegerTracerProvider implements TracerProvider {
     private static final PrintStream console = System.out;
 
     static SdkTracerProviderBuilder tracerProviderBuilder;
+    static SdkTracerProvider sdkTracerProvider;
 
     @Override
     public String getName() {
@@ -60,16 +59,26 @@ public class JaegerTracerProvider implements TracerProvider {
     public static void initializeConfigurations(BString agentHostname, int agentPort, BString samplerType,
                                                 BDecimal samplerParam, int reporterFlushInterval,
                                                 int reporterBufferSize) {
+        initializeConfigurationsForTest(
+                agentHostname.toString(),
+                agentPort,
+                samplerType.toString(),
+                samplerParam.value().doubleValue(),
+                reporterFlushInterval,
+                reporterBufferSize);
+    }
 
-        String reporterEndpoint = agentHostname + ":" + agentPort;
+    /**
+     * Initialize configurations with plain Java types (for testing without Ballerina runtime).
+     */
+    public static void initializeConfigurationsForTest(String agentHostname, int agentPort, String samplerType,
+                                                       double samplerParam, int reporterFlushInterval,
+                                                       int reporterBufferSize) {
 
-        ManagedChannel jaegerChannel = new NettyChannelProvider()
-                .builderForTarget(reporterEndpoint)
-                .usePlaintext()
-                .build();
+        String reporterEndpoint = "http://" + agentHostname + ":" + agentPort + "/v1/traces";
 
-        OtlpGrpcSpanExporter exporter = OtlpGrpcSpanExporter.builder()
-                .setChannel(jaegerChannel)
+        OtlpHttpSpanExporter exporter = OtlpHttpSpanExporter.builder()
+                .setEndpoint(reporterEndpoint)
                 .build();
 
         tracerProviderBuilder = SdkTracerProvider.builder()
@@ -84,33 +93,46 @@ public class JaegerTracerProvider implements TracerProvider {
         console.println("ballerina: started publishing traces to Jaeger on " + reporterEndpoint);
     }
 
-    private static Sampler selectSampler(BString samplerType, BDecimal samplerParam) {
-        switch (samplerType.getValue()) {
+    private static Sampler selectSampler(String samplerType, double samplerParam) {
+        switch (samplerType) {
             default:
             case "const":
-                if (samplerParam.value().intValue() == 0) {
+                if ((int) samplerParam == 0) {
                     return Sampler.alwaysOff();
                 } else {
                     return Sampler.alwaysOn();
                 }
             case "probabilistic":
-                return Sampler.traceIdRatioBased(samplerParam.value().doubleValue());
+                return Sampler.traceIdRatioBased(samplerParam);
             case RateLimitingSampler.TYPE:
-                return new RateLimitingSampler(samplerParam.value().intValue());
+                return new RateLimitingSampler((int) samplerParam);
         }
     }
 
     @Override
     public Tracer getTracer(String serviceName) {
+        return getTracerInternal(serviceName);
+    }
 
-        return tracerProviderBuilder.setResource(
-                Resource.create(Attributes.of(SERVICE_NAME, serviceName)))
-                .build().get("jaeger");
+    private static Tracer getTracerInternal(String serviceName) {
+        sdkTracerProvider = tracerProviderBuilder.setResource(
+                Resource.create(Attributes.of(SERVICE_NAME, "test-agpq4y")))
+                .build();
+        return sdkTracerProvider.get("jaeger");
     }
 
     @Override
     public ContextPropagators getPropagators() {
 
         return ContextPropagators.create(W3CTraceContextPropagator.getInstance());
+    }
+
+    /**
+     * Shutdown the tracer provider and flush all pending spans.
+     */
+    public static void shutdown() {
+        if (sdkTracerProvider != null) {
+            sdkTracerProvider.shutdown();
+        }
     }
 }

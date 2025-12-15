@@ -22,7 +22,7 @@ const PROVIDER_NAME = "jaeger";
 const DEFAULT_SAMPLER_TYPE = "const";
 
 configurable string agentHostname = "localhost";
-configurable int agentPort = 55680;
+configurable int agentPort = 21893;
 configurable string samplerType = "const";
 configurable decimal samplerParam = 1;
 configurable int reporterFlushInterval = 1000;
