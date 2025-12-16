@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.backend;
+package io.ballerina.observe.trace.amp.backend;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.ExposedPort;
@@ -31,17 +31,17 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Container based Jaeger Server.
+ * Container based Amp Server.
  * <p>
- * This is a Jaeger server implementation based on a linux Jaeger container.
+ * This is a Amp server implementation based on a linux Amp container.
  */
 public class ContainerizedJaegerServer implements JaegerServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ContainerizedJaegerServer.class);
-    private static final String JAEGER_IMAGE = "jaegertracing/opentelemetry-all-in-one:latest";
+    private static final String AMP_IMAGE = "amptracing/opentelemetry-all-in-one:latest";
     private static final int API_PORT = 16686;
 
     private DockerClient dockerClient;
-    private String jaegerContainerId;
+    private String ampContainerId;
 
     public ContainerizedJaegerServer() throws Exception {
         DefaultDockerClientConfig dockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
@@ -50,18 +50,18 @@ public class ContainerizedJaegerServer implements JaegerServer {
                         .dockerHost(dockerClientConfig.getDockerHost())
                         .sslConfig(dockerClientConfig.getSSLConfig())
                         .build());
-        dockerClient.pullImageCmd(JAEGER_IMAGE)
+        dockerClient.pullImageCmd(AMP_IMAGE)
                 .start()
                 .awaitCompletion(20, TimeUnit.SECONDS);
     }
 
     @Override
     public void startServer(String interfaceIP, int udpBindPort, JaegerServerProtocol protocol) {
-        if (jaegerContainerId != null) {
-            throw new IllegalStateException("Jaeger server already started");
+        if (ampContainerId != null) {
+            throw new IllegalStateException("Amp server already started");
         }
         if (dockerClient == null) {
-            throw new IllegalStateException("Containerized Jaeger server cannot be started after " +
+            throw new IllegalStateException("Containerized Amp server cannot be started after " +
                     "cleaning up docker client");
         }
         int targetPort;
@@ -70,32 +70,32 @@ public class ContainerizedJaegerServer implements JaegerServer {
                 targetPort = 55680;
                 break;
             default:
-                throw new IllegalArgumentException("Unknown Jaeger Protocol type " + protocol);
+                throw new IllegalArgumentException("Unknown Amp Protocol type " + protocol);
         }
-        jaegerContainerId = dockerClient.createContainerCmd(JAEGER_IMAGE)
-                .withName("ballerina-test-jaeger-" + System.currentTimeMillis())
+        ampContainerId = dockerClient.createContainerCmd(AMP_IMAGE)
+                .withName("ballerina-test-amp-" + System.currentTimeMillis())
                 .withExposedPorts(new ExposedPort(API_PORT), new ExposedPort(targetPort))
                 .withHostConfig(HostConfig.newHostConfig()
                         .withPortBindings(PortBinding.parse(interfaceIP + ":" + API_PORT + ":" + API_PORT + "/tcp"),
                                 PortBinding.parse(interfaceIP + ":" + udpBindPort + ":" + targetPort + "/tcp")))
                 .exec()
                 .getId();
-        dockerClient.startContainerCmd(jaegerContainerId).exec();
-        dockerClient.logContainerCmd(jaegerContainerId)
+        dockerClient.startContainerCmd(ampContainerId).exec();
+        dockerClient.logContainerCmd(ampContainerId)
                 .withStdOut(true)
                 .withStdErr(true)
                 .withFollowStream(true)
                 .exec(new ContainerLogReader());
-        LOGGER.info("Started Jaeger container with container ID " + jaegerContainerId);
+        LOGGER.info("Started Amp container with container ID " + ampContainerId);
     }
 
     @Override
     public void stopServer() {
-        if (jaegerContainerId != null) {
-            dockerClient.stopContainerCmd(jaegerContainerId).exec();
-            LOGGER.info("Stopped Jaeger container with container ID " + jaegerContainerId);
-            dockerClient.removeContainerCmd(jaegerContainerId).exec();
-            jaegerContainerId = null;
+        if (ampContainerId != null) {
+            dockerClient.stopContainerCmd(ampContainerId).exec();
+            LOGGER.info("Stopped Amp container with container ID " + ampContainerId);
+            dockerClient.removeContainerCmd(ampContainerId).exec();
+            ampContainerId = null;
         }
     }
 

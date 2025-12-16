@@ -18,7 +18,7 @@ plugins {
     id 'jacoco'
 }
 
-description = 'Ballerina - Jaeger Extension Tests'
+description = 'Ballerina - Amp Extension Tests'
 
 configurations {
     observabilityExtensions {
@@ -30,7 +30,7 @@ configurations {
 }
 
 dependencies {
-    observabilityExtensions project(path: ':jaeger-extension-ballerina', configuration: 'distribution')
+    observabilityExtensions project(path: ':amp-extension-ballerina', configuration: 'distribution')
 
     testImplementation "org.ballerinalang:ballerina-runtime:${ballerinaLangVersion}"
     testImplementation "org.ballerinalang:ballerina-test-utils:${ballerinaLangVersion}"

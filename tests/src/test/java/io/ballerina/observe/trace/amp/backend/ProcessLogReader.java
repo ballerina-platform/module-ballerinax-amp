@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.backend;
+package io.ballerina.observe.trace.amp.backend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,11 +15,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.backend;
+package io.ballerina.observe.trace.amp.model;
 
 /**
- * Types of supported Jaeger protocols.
+ * Amp Span Reference model.
  */
-public enum JaegerServerProtocol {
-    OTL_GRPC
+public class AmpSpanReference {
+    private String refType;
+    private String traceID;
+    private String spanID;
+
+    public String getRefType() {
+        return refType;
+    }
+
+    public void setRefType(String refType) {
+        this.refType = refType;
+    }
+
+    public String getTraceID() {
+        return traceID;
+    }
+
+    public void setTraceID(String traceID) {
+        this.traceID = traceID;
+    }
+
+    public String getSpanID() {
+        return spanID;
+    }
+
+    public void setSpanID(String spanID) {
+        this.spanID = spanID;
+    }
 }

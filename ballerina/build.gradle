@@ -16,7 +16,7 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-description = 'Ballerina - Jaeger Extension - Ballerina Module'
+description = 'Ballerina - Amp Extension - Ballerina Module'
 
 configurations {
     nativeJar {
@@ -32,7 +32,7 @@ configurations {
 }
 
 dependencies {
-    nativeJar project(':jaeger-extension-native')
+    nativeJar project(':amp-extension-native')
 
     externalJars "io.opentelemetry:opentelemetry-api:${openTelemetryVersion}"
     externalJars "io.opentelemetry:opentelemetry-context:${openTelemetryVersion}"
@@ -65,7 +65,7 @@ task copyExternalJarsToLib(type: Copy) {
 }
 
 def packageOrg = "ballerinax"
-def packageName = "jaeger"
+def packageName = "amp"
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
 def artifactCacheParent = file("${project.buildDir}/cache_parent/")
@@ -133,7 +133,7 @@ task ballerinaBuild {
     dependsOn spotbugsMain
     dependsOn spotbugsTest
     dependsOn test
-    dependsOn ":jaeger-extension-ballerina:generatePomFileForMavenJavaPublication"
+    dependsOn ":amp-extension-ballerina:generatePomFileForMavenJavaPublication"
 
     inputs.dir file(project.projectDir)
     if (skipTests) {
@@ -204,7 +204,7 @@ artifacts {
 task ballerinaPublish {
     dependsOn updateTomlVersions
     dependsOn ballerinaBuild
-    dependsOn ":jaeger-extension-ballerina:generatePomFileForMavenJavaPublication"
+    dependsOn ":amp-extension-ballerina:generatePomFileForMavenJavaPublication"
 
     finalizedBy(revertTomlFile)
 

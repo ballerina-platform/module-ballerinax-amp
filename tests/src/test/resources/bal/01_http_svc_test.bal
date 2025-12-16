@@ -16,7 +16,7 @@
 
 import ballerina/io;
 import ballerina/http;
-import ballerina/observe; import ballerinax/jaeger as _;   // TODO: Remove extension module imports
+import ballerina/observe; import ballerinax/amp as _;   // TODO: Remove extension module imports
 
 service /test on new http:Listener(9091) {
     resource function get sum(http:Caller caller, http:Request req) {
@@ -49,5 +49,5 @@ class ObservableAdder {
 }
 
 public function main() {
-    io:println("Starting Jaeger Resources");
+    io:println("Starting Amp Resources");
 }

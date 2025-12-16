@@ -15,37 +15,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
+package io.ballerina.observe.trace.amp.model;
+
+import java.util.Set;
 
 /**
- * Jaeger Span Reference model.
+ * Amp Process model.
  */
-public class JaegerSpanReference {
-    private String refType;
-    private String traceID;
-    private String spanID;
+public class AmpProcess {
+    private String serviceName;
+    private Set<AmpTag> tags;
 
-    public String getRefType() {
-        return refType;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setRefType(String refType) {
-        this.refType = refType;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public String getTraceID() {
-        return traceID;
+    public Set<AmpTag> getTags() {
+        return tags;
     }
 
-    public void setTraceID(String traceID) {
-        this.traceID = traceID;
-    }
-
-    public String getSpanID() {
-        return spanID;
-    }
-
-    public void setSpanID(String spanID) {
-        this.spanID = spanID;
+    public void setTags(Set<AmpTag> tags) {
+        this.tags = tags;
     }
 }

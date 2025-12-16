@@ -1,17 +1,17 @@
 ## Package Overview
 
-The Jaeger Observability Extension is one of the tracing extensions of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
+The Amp Observability Extension is one of the tracing extensions of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
 
-It provides an implementation for tracing and publishing traces to a Jaeger Agent.
+It provides an implementation for tracing and publishing traces to a Amp Agent.
 
-## Enabling Jaeger Extension
+## Enabling Amp Extension
 
-To package the Jaeger extension into the Jar, follow the following steps.
+To package the Amp extension into the Jar, follow the following steps.
 
 1. Add the following import to your program.
 
 ```ballerina
-import ballerinax/jaeger as _;
+import ballerinax/amp as _;
 ```
 
 2. Add the following to the `Ballerina.toml` when building your program.
@@ -26,13 +26,13 @@ version = "1.0.0"
 observabilityIncluded=true
 ```
 
-To enable the extension and publish traces to Jaeger, add the following to the `Config.toml` when running your program.
+To enable the extension and publish traces to Amp, add the following to the `Config.toml` when running your program.
 
 ```toml
 [ballerina.observe]
 tracingEnabled=true
-tracingProvider="jaeger"
+tracingProvider="amp"
 
-[ballerinax.jaeger]
+[ballerinax.amp]
 otelEndpoint="http://localhost:21893"  # Optional Configuration. Default value is http://localhost:21893
 ```

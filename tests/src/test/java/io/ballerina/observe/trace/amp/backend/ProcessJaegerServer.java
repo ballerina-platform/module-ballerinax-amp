@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.backend;
+package io.ballerina.observe.trace.amp.backend;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +25,13 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Executable program based Jaeger server.
+ * Executable program based Amp server.
  *
  * This starts and stops the server using scripts. The script paths need to be provided as environment variables.
  */
 public class ProcessJaegerServer implements JaegerServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessJaegerServer.class);
-    public static final String EXECUTABLE_ENV_VAR_KEY = "JAEGER_SERVER_EXECUTABLE";
+    public static final String EXECUTABLE_ENV_VAR_KEY = "AMP_SERVER_EXECUTABLE";
 
     private final String executableFile;
     private Process jaegerServerProcess;
@@ -42,31 +42,31 @@ public class ProcessJaegerServer implements JaegerServer {
         executableFile = System.getenv(EXECUTABLE_ENV_VAR_KEY);
         File executableFileFile = new File(executableFile);
         if (!executableFileFile.exists()) {
-            throw new IllegalStateException("Jaeger executable " + executableFile + " does not exist");
+            throw new IllegalStateException("Amp executable " + executableFile + " does not exist");
         }
         if (!executableFileFile.isFile()) {
-            throw new IllegalStateException("Jaeger executable " + executableFile + " is not a file");
+            throw new IllegalStateException("Amp executable " + executableFile + " is not a file");
         }
     }
 
     @Override
     public void startServer(String interfaceIP, int udpBindPort, JaegerServerProtocol protocol) throws IOException {
         if (jaegerServerProcess != null || processOutputLogReader != null || processErrorLogReader != null) {
-            throw new IllegalStateException("Jaeger server already started");
+            throw new IllegalStateException("Amp server already started");
         }
         String processorFlag;
         switch (protocol) {
             case OTL_GRPC:
-                processorFlag = "--processor.jaeger-compact.server-host-port";
+                processorFlag = "--processor.amp-compact.server-host-port";
                 break;
             default:
-                throw new IllegalArgumentException("Unknown Jaeger Protocol type " + protocol);
+                throw new IllegalArgumentException("Unknown Amp Protocol type " + protocol);
         }
         String bindPort = interfaceIP + ":" + udpBindPort;
         jaegerServerProcess = new ProcessBuilder()
                 .command(executableFile, processorFlag, bindPort)
                 .start();
-        LOGGER.info("Started Jaeger process with process ID " + jaegerServerProcess.pid());
+        LOGGER.info("Started Amp process with process ID " + jaegerServerProcess.pid());
 
         processOutputLogReader = new ProcessLogReader(jaegerServerProcess.getInputStream());
         processErrorLogReader = new ProcessLogReader(jaegerServerProcess.getErrorStream());
@@ -80,7 +80,7 @@ public class ProcessJaegerServer implements JaegerServer {
             processErrorLogReader.close();
             jaegerServerProcess.destroy();
             jaegerServerProcess.waitFor(10000, TimeUnit.SECONDS);
-            LOGGER.info("Stopped Jaeger process with process ID " + processID);
+            LOGGER.info("Stopped Amp process with process ID " + processID);
 
             jaegerServerProcess = null;
             processOutputLogReader = null;

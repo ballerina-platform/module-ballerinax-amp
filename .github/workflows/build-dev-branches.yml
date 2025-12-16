@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       ballerina_version:
-        description: 'Ballerina version'
+        description: "Ballerina version"
         required: true
-        default: '2201.10.0'
+        default: "2201.10.0"
   push:
     branches-ignore:
       - main
@@ -14,7 +14,7 @@ on:
       - "automated/dependency_version_update_tmp"
 
 env:
-  BALLERINA_DISTRIBUTION_VERSION: 2201.11.0    # Update this with the latest Ballerina version
+  BALLERINA_DISTRIBUTION_VERSION: 2201.11.0 # Update this with the latest Ballerina version
 
 jobs:
   ubuntu-build:
@@ -25,7 +25,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 21.0.3
       - name: Set up Ballerina
         if: github.event_name == 'workflow_dispatch'
@@ -49,10 +49,10 @@ jobs:
       - name: Upload Coverage Report
         uses: codecov/codecov-action@v4
         with:
-          files: ballerina-tests/jaeger-server-tests/target/report/jaeger_server_tests/coverage-report.xml
+          files: ballerina-tests/jaeger-server-tests/target/report/amp_server_tests/coverage-report.xml
 
   windows-build:
-    if: false # because there is no opentelemetry-jaeger-executable available
+    if: false # because there is no opentelemetry-amp-executable available
     runs-on: windows-latest
     steps:
       - name: Checkout Repository
@@ -60,18 +60,18 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 21.0.3
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Download Jaeger server executable
+      - name: Download Amp server executable
         env:
-          JAEGER_VERSION: 1.21.0
+          AMP_VERSION: 1.21.0
         run: |
-          Invoke-WebRequest https://github.com/jaegertracing/jaeger/releases/download/v$env:JAEGER_VERSION/jaeger-$env:JAEGER_VERSION-windows-amd64.tar.gz -O jaeger.tar.gz
-          tar -xzvf jaeger.tar.gz
-          mv jaeger-$env:JAEGER_VERSION-windows-amd64 jaeger
-          echo "JAEGER_SERVER_EXECUTABLE=$(Resolve-Path jaeger\jaeger-all-in-one.exe)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Invoke-WebRequest https://github.com/amptracing/amp/releases/download/v$env:AMP_VERSION/amp-$env:AMP_VERSION-windows-amd64.tar.gz -O amp.tar.gz
+          tar -xzvf amp.tar.gz
+          mv amp-$env:AMP_VERSION-windows-amd64 amp
+          echo "AMP_SERVER_EXECUTABLE=$(Resolve-Path amp\amp-all-in-one.exe)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Build with Gradle
         env:
           packageUser: ${{ github.actor }}

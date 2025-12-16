@@ -1,5 +1,5 @@
 fixes:
-  - "ballerinax/jaeger/*/::ballerina/"
-  
+  - "ballerinax/amp/*/::ballerina/"
+
 ignore:
   - "**/native"

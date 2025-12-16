@@ -15,30 +15,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
-
-import java.util.Set;
+package io.ballerina.observe.trace.amp.backend;
 
 /**
- * Jaeger Process model.
+ * Types of supported Amp protocols.
  */
-public class JaegerProcess {
-    private String serviceName;
-    private Set<JaegerTag> tags;
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public Set<JaegerTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<JaegerTag> tags) {
-        this.tags = tags;
-    }
+public enum JaegerServerProtocol {
+    OTL_GRPC
 }

@@ -9,6 +9,6 @@ observabilityIncluded = true
 
 [[dependency]]
 org="ballerinax"
-name="jaeger"
+name="amp"
 repository="local"
 version = "@toml.version@"

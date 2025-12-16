@@ -15,28 +15,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
+package io.ballerina.observe.trace.amp.model;
 
 import com.google.common.reflect.TypeToken;
 
 import java.util.List;
 
 /**
- * Jaeger Query endpoint response related Gson type tokens.
+ * Amp Query endpoint response related Gson type tokens.
  */
-public class JaegerQueryResponseTypeToken {
+public class AmpQueryResponseTypeToken {
 
     /**
      * Type token for the data in the response of /api/services query endpoint.
      */
-    public static class Services extends TypeToken<JaegerQueryResponse<List<String>>> {
+    public static class Services extends TypeToken<AmpQueryResponse<List<String>>> {
         private static final long serialVersionUID = -2338626252352177485L;
     }
 
     /**
      * Type token for the data in the response of /api/traces query endpoint.
      */
-    public static class Traces extends TypeToken<JaegerQueryResponse<List<JaegerTrace>>> {
+    public static class Traces extends TypeToken<AmpQueryResponse<List<AmpTrace>>> {
         private static final long serialVersionUID = -2338626252327477485L;
     }
 }

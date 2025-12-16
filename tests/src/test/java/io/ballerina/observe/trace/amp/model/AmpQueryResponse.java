@@ -15,14 +15,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
+package io.ballerina.observe.trace.amp.model;
 
 /**
- * Jaeger query response model.
+ * Amp query response model.
  *
- * @param <E> The type of the data returned in the Jaeger query.
+ * @param <E> The type of the data returned in the Amp query.
  */
-public class JaegerQueryResponse<E> {
+public class AmpQueryResponse<E> {
     private E data;
 
     public E getData() {
