@@ -15,15 +15,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.backend;
+package io.ballerina.observe.trace.amp.backend;
 
 /**
- * Interface for a Jaeger Server.
+ * Interface for a Amp Server.
  */
 public interface JaegerServer {
 
     /**
-     * Start the Jaeger server.
+     * Start the Amp server.
      *
      * @param interfaceIP The IP of the interface to bind to
      * @param udpBindPort The UDP publishing port to bind to
@@ -33,7 +33,7 @@ public interface JaegerServer {
     void startServer(String interfaceIP, int udpBindPort, JaegerServerProtocol protocol) throws Exception;
 
     /**
-     * Stop the Jaeger server which had been started.
+     * Stop the Amp server which had been started.
      *
      * @throws Exception if stopping the server fails
      */

@@ -2,7 +2,7 @@
  * Copyright The OpenTelemetry Authors
  * SPDX-License-Identifier: Apache-2.0
  */
-package io.ballerina.observe.trace.jaeger.sampler;
+package io.ballerina.observe.trace.amp.sampler;
 
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -24,7 +24,7 @@ import static io.opentelemetry.api.common.AttributeKey.stringKey;
 
 /**
  * This class is copied from https://github.com/open-telemetry/opentelemetry-java/blob/v1.32.0/sdk-extensions/
- * jaeger-remote-sampler/src/main/java/io/opentelemetry/sdk/extension/trace/jaeger/sampler/RateLimitingSampler.java.
+ * amp-remote-sampler/src/main/java/io/opentelemetry/sdk/extension/trace/amp/sampler/RateLimitingSampler.java.
  * This sampler uses a leaky bucket rate limiter to ensure that traces are sampled with a certain constant rate.
  */
 public class RateLimitingSampler implements Sampler {

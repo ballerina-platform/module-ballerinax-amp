@@ -15,18 +15,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
+package io.ballerina.observe.trace.amp.model;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Jaeger Trace model.
+ * Amp Trace model.
  */
-public class JaegerTrace {
+public class AmpTrace {
     private String traceID;
-    private List<JaegerSpan> spans;
-    private Map<String, JaegerProcess> processes;
+    private List<AmpSpan> spans;
+    private Map<String, AmpProcess> processes;
 
     public String getTraceID() {
         return traceID;
@@ -36,19 +36,19 @@ public class JaegerTrace {
         this.traceID = traceID;
     }
 
-    public List<JaegerSpan> getSpans() {
+    public List<AmpSpan> getSpans() {
         return spans;
     }
 
-    public void setSpans(List<JaegerSpan> spans) {
+    public void setSpans(List<AmpSpan> spans) {
         this.spans = spans;
     }
 
-    public Map<String, JaegerProcess> getProcesses() {
+    public Map<String, AmpProcess> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(Map<String, JaegerProcess> processes) {
+    public void setProcesses(Map<String, AmpProcess> processes) {
         this.processes = processes;
     }
 }

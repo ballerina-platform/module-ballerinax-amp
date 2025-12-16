@@ -18,7 +18,7 @@ plugins {
     id 'java-library'
 }
 
-description = 'Ballerina - Jaeger Extension - Native Module'
+description = 'Ballerina - Amp Extension - Native Module'
 
 dependencies {
     implementation "org.ballerinalang:ballerina-runtime:${ballerinaLangVersion}"
@@ -50,7 +50,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
-            artifactId "jaeger-extension-native"
+            artifactId "amp-extension-native"
             version = project.version
             artifact jar
         }

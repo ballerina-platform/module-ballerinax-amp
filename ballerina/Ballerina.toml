@@ -16,7 +16,7 @@
 
 [package]
 org = "ballerinax"
-name = "jaeger"
+name = "amp"
 version = "@toml.version@"
 distribution = "2201.12.0"
 
@@ -24,9 +24,9 @@ distribution = "2201.12.0"
 graalvmCompatible = true
 
 [[platform.java21.dependency]]
-path = "../native/build/libs/jaeger-extension-native-@project.version@.jar"
+path = "../native/build/libs/amp-extension-native-@project.version@.jar"
 groupId = "ballerina"
-artifactId = "jaeger-extension-native"
+artifactId = "amp-extension-native"
 version = "@project.version@"
 
 [[platform.java21.dependency]]

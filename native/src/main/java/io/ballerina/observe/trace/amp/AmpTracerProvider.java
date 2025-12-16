@@ -15,9 +15,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger;
+package io.ballerina.observe.trace.amp;
 
-import io.ballerina.observe.trace.jaeger.sampler.RateLimitingSampler;
+import io.ballerina.observe.trace.amp.sampler.RateLimitingSampler;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.observability.tracer.spi.TracerProvider;
@@ -40,10 +40,10 @@ import java.util.concurrent.TimeUnit;
 import static io.opentelemetry.semconv.ResourceAttributes.SERVICE_NAME;
 
 /**
- * This is the Jaeger tracing extension class for {@link TracerProvider}.
+ * This is the Amp tracing extension class for {@link TracerProvider}.
  */
-public class JaegerTracerProvider implements TracerProvider {
-    private static final String TRACER_NAME = "jaeger";
+public class AmpTracerProvider implements TracerProvider {
+    private static final String TRACER_NAME = "amp";
     private static final PrintStream console = System.out;
 
     static SdkTracerProviderBuilder tracerProviderBuilder;
@@ -90,11 +90,11 @@ public class JaegerTracerProvider implements TracerProvider {
                                                            int reporterBufferSize, String apiKey, String serviceName,
                                                            String orgUid, String projectUid, String componentUid,
                                                            String environmentUid) {
-        JaegerTracerProvider.serviceName = serviceName;
-        JaegerTracerProvider.orgUid = orgUid;
-        JaegerTracerProvider.projectUid = projectUid;
-        JaegerTracerProvider.componentUid = componentUid;
-        JaegerTracerProvider.environmentUid = environmentUid;
+        AmpTracerProvider.serviceName = serviceName;
+        AmpTracerProvider.orgUid = orgUid;
+        AmpTracerProvider.projectUid = projectUid;
+        AmpTracerProvider.componentUid = componentUid;
+        AmpTracerProvider.environmentUid = environmentUid;
 
         String reporterEndpoint = otelEndpoint + "/v1/traces";
 
@@ -117,7 +117,7 @@ public class JaegerTracerProvider implements TracerProvider {
 
         tracerProviderBuilder.setSampler(selectSampler(samplerType, samplerParam));
 
-        console.println("ballerina: started publishing traces to Jaeger on " + reporterEndpoint);
+        console.println("ballerina: started publishing traces to Amp on " + reporterEndpoint);
     }
 
     private static Sampler selectSampler(String samplerType, double samplerParam) {
@@ -143,27 +143,27 @@ public class JaegerTracerProvider implements TracerProvider {
 
     private static Tracer getTracerInternal(String serviceName) {
         AttributesBuilder builder = Attributes.builder();
-        if (!JaegerTracerProvider.serviceName.isEmpty()) {
-            builder.put(SERVICE_NAME, JaegerTracerProvider.serviceName);
+        if (!AmpTracerProvider.serviceName.isEmpty()) {
+            builder.put(SERVICE_NAME, AmpTracerProvider.serviceName);
         } else {
             builder.put(SERVICE_NAME, serviceName);
         }
-        if (!JaegerTracerProvider.orgUid.isEmpty()) {
-            builder.put("openchoreo.dev/org-uid", JaegerTracerProvider.orgUid);
+        if (!AmpTracerProvider.orgUid.isEmpty()) {
+            builder.put("openchoreo.dev/org-uid", AmpTracerProvider.orgUid);
         }
-        if (!JaegerTracerProvider.projectUid.isEmpty()) {
-            builder.put("openchoreo.dev/project-uid", JaegerTracerProvider.projectUid);
+        if (!AmpTracerProvider.projectUid.isEmpty()) {
+            builder.put("openchoreo.dev/project-uid", AmpTracerProvider.projectUid);
         }
-        if (!JaegerTracerProvider.componentUid.isEmpty()) {
-            builder.put("openchoreo.dev/component-uid", JaegerTracerProvider.componentUid);
+        if (!AmpTracerProvider.componentUid.isEmpty()) {
+            builder.put("openchoreo.dev/component-uid", AmpTracerProvider.componentUid);
         }
-        if (!JaegerTracerProvider.environmentUid.isEmpty()) {
-            builder.put("openchoreo.dev/environment-uid", JaegerTracerProvider.environmentUid);
+        if (!AmpTracerProvider.environmentUid.isEmpty()) {
+            builder.put("openchoreo.dev/environment-uid", AmpTracerProvider.environmentUid);
         }
         sdkTracerProvider = tracerProviderBuilder
                 .setResource(Resource.create(builder.build()))
                 .build();
-        return sdkTracerProvider.get("jaeger");
+        return sdkTracerProvider.get("amp");
     }
 
     @Override

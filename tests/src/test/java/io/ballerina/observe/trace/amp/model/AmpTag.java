@@ -15,19 +15,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger.model;
+package io.ballerina.observe.trace.amp.model;
 
 import java.util.Objects;
 
 /**
- * Jaeger Trace Tag model.
+ * Amp Trace Tag model.
  */
-public class JaegerTag {
+public class AmpTag {
     private String key;
     private String type;
     private String value;
 
-    public JaegerTag(String key, String type, String value) {
+    public AmpTag(String key, String type, String value) {
         this.key = key;
         this.type = type;
         this.value = value;
@@ -62,13 +62,13 @@ public class JaegerTag {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof JaegerTag)) {
+        if (!(o instanceof AmpTag)) {
             return false;
         }
-        JaegerTag jaegerTag = (JaegerTag) o;
-        return Objects.equals(getKey(), jaegerTag.getKey()) &&
-                Objects.equals(getType(), jaegerTag.getType()) &&
-                Objects.equals(getValue(), jaegerTag.getValue());
+        AmpTag ampTag = (AmpTag) o;
+        return Objects.equals(getKey(), ampTag.getKey()) &&
+                Objects.equals(getType(), ampTag.getType()) &&
+                Objects.equals(getValue(), ampTag.getValue());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class JaegerTag {
 
     @Override
     public String toString() {
-        return "JaegerTag{" +
+        return "AmpTag{" +
                 "key='" + key + '\'' +
                 ", type='" + type + '\'' +
                 ", value='" + value + '\'' +

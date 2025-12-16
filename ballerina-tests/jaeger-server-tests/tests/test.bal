@@ -90,18 +90,24 @@ map<Span> spanMap = {};
 
 @test:BeforeSuite
 function sendRequest() returns error? {
-    res = check cl->get("/test/sum");
+    runtime:sleep(3); // Wait for service to be fully ready
 
-    runtime:sleep(10);
+    // Make HTTP request to the test service
+    http:Response|error response = cl->get("/test/sum");
+    if response is error {
+        test:assertFail(string `Failed to connect to test service: ${response.message()}`);
+    }
+    res = response;
+
+    runtime:sleep(30); // Give time for traces to be published and processed by Jaeger
 
     json testServiceTracePayloadData = check jaegerClient->get("/api/traces?service=%2Ftest");
     TracePayload testServiceTracePayload = check testServiceTracePayloadData.fromJsonWithType(TracePayload);
 
-    do {
-        testServiceTrace = testServiceTracePayload.data[0];
-    } on fail {
+    if testServiceTracePayload.data.length() == 0 {
         test:assertFail("No traces found with service name: \"/test\".");
     }
+    testServiceTrace = testServiceTracePayload.data[0];
 
     foreach Span span in (<Trace> testServiceTrace).spans {
         spanMap[span.operationName] = span;
@@ -214,7 +220,7 @@ function testGetSumSpanTags() returns error? {
     test:assertTrue(containsTag("listener.name", getSumSpanTagKeys));
     test:assertEquals(getSumSpanTags["listener.name"], "http");
     test:assertTrue(containsTag("otlp.instrumentation.library.name", getSumSpanTagKeys));
-    test:assertEquals(getSumSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(getSumSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("protocol", getSumSpanTagKeys));
     test:assertEquals(getSumSpanTags["protocol"], "http");
     test:assertTrue(containsTag("span.kind", getSumSpanTagKeys));
@@ -224,7 +230,7 @@ function testGetSumSpanTags() returns error? {
     test:assertTrue(containsTag("src.object.name", getSumSpanTagKeys));
     test:assertEquals(getSumSpanTags["src.object.name"], "/test");
     test:assertTrue(containsTag("src.position", getSumSpanTagKeys));
-    test:assertEquals(getSumSpanTags["src.position"], "main.bal:26:5");
+    test:assertEquals(getSumSpanTags["src.position"], "tests/test_service.bal:26:5");
     test:assertTrue(containsTag("src.resource.accessor", getSumSpanTagKeys));
     test:assertEquals(getSumSpanTags["src.resource.accessor"], "get");
     test:assertTrue(containsTag("src.resource.path", getSumSpanTagKeys));
@@ -250,7 +256,7 @@ function testObservableAdderSpanTags() returns error? {
     test:assertTrue(containsTag("entrypoint.service.name", observableAdderSpanTagKeys));
     test:assertEquals(observableAdderSpanTags["entrypoint.service.name"], "/test");
     test:assertTrue(containsTag("otlp.instrumentation.library.name", observableAdderSpanTagKeys));
-    test:assertEquals(observableAdderSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(observableAdderSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("span.kind", observableAdderSpanTagKeys));
     test:assertEquals(observableAdderSpanTags["span.kind"], "client");
     test:assertTrue(containsTag("src.function.name", observableAdderSpanTagKeys));
@@ -260,7 +266,7 @@ function testObservableAdderSpanTags() returns error? {
     test:assertTrue(containsTag("src.object.name", observableAdderSpanTagKeys));
     test:assertEquals(observableAdderSpanTags["src.object.name"], "ballerinax/jaeger_server_tests/ObservableAdder");
     test:assertTrue(containsTag("src.position", observableAdderSpanTagKeys));
-    test:assertEquals(observableAdderSpanTags["src.position"], "main.bal:28:19");
+    test:assertEquals(observableAdderSpanTags["src.position"], "tests/test_service.bal:28:19");
 }
 
 @test:Config
@@ -282,7 +288,7 @@ function testHttpCallerSpanTags() returns error? {
     test:assertTrue(containsTag("http.status_code", httpCallerSpanTagKeys));
     test:assertEquals(httpCallerSpanTags["http.status_code"], http:STATUS_OK.toString());
     test:assertTrue(containsTag("otlp.instrumentation.library.name", httpCallerSpanTagKeys));
-    test:assertEquals(httpCallerSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(httpCallerSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("span.kind", httpCallerSpanTagKeys));
     test:assertEquals(httpCallerSpanTags["span.kind"], "client");
     test:assertTrue(containsTag("src.client.remote", httpCallerSpanTagKeys));
@@ -294,7 +300,7 @@ function testHttpCallerSpanTags() returns error? {
     test:assertTrue(containsTag("src.object.name", httpCallerSpanTagKeys));
     test:assertEquals(httpCallerSpanTags["src.object.name"], "ballerina/http/Caller");
     test:assertTrue(containsTag("src.position", httpCallerSpanTagKeys));
-    test:assertEquals(httpCallerSpanTags["src.position"], "main.bal:32:20");
+    test:assertEquals(httpCallerSpanTags["src.position"], "tests/test_service.bal:32:20");
 }
 
 @test:Config
@@ -318,7 +324,7 @@ function testClientSpanTags() returns error? {
     test:assertTrue(containsTag("http.url", clientSpanTagKeys));
     test:assertEquals(clientSpanTags["http.url"], "/test/sum");
     test:assertTrue(containsTag("otlp.instrumentation.library.name", clientSpanTagKeys));
-    test:assertEquals(clientSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(clientSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("span.kind", clientSpanTagKeys));
     test:assertEquals(clientSpanTags["span.kind"], "client");
     test:assertTrue(containsTag("src.client.remote", clientSpanTagKeys));
@@ -330,7 +336,7 @@ function testClientSpanTags() returns error? {
     test:assertTrue(containsTag("src.object.name", clientSpanTagKeys));
     test:assertEquals(clientSpanTags["src.object.name"], "ballerina/http/Client");
     test:assertTrue(containsTag("src.position", clientSpanTagKeys));
-    test:assertEquals(clientSpanTags["src.position"], "tests/test.bal:93:17");
+    test:assertEquals(clientSpanTags["src.position"], "tests/test.bal:96:36");
 }
 
 @test:Config
@@ -346,7 +352,7 @@ function testHttpCachingClientSpanTags() returns error? {
     test:assertTrue(containsTag("entrypoint.function.name", httpCachingClientSpanTagKeys));
     test:assertEquals(httpCachingClientSpanTags["entrypoint.function.name"], "get");
     test:assertTrue(containsTag("otlp.instrumentation.library.name", httpCachingClientSpanTagKeys));
-    test:assertEquals(httpCachingClientSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(httpCachingClientSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("span.kind", httpCachingClientSpanTagKeys));
     test:assertEquals(httpCachingClientSpanTags["span.kind"], "client");
     test:assertTrue(containsTag("src.client.remote", httpCachingClientSpanTagKeys));
@@ -358,7 +364,7 @@ function testHttpCachingClientSpanTags() returns error? {
     test:assertTrue(containsTag("src.object.name", httpCachingClientSpanTagKeys));
     test:assertEquals(httpCachingClientSpanTags["src.object.name"], "ballerina/http/HttpCachingClient");
     test:assertTrue(containsTag("src.position", httpCachingClientSpanTagKeys));
-    test:assertEquals(httpCachingClientSpanTags["src.position"], "http_client_endpoint.bal:91:41");
+    test:assertEquals(httpCachingClientSpanTags["src.position"], "http_client_endpoint.bal:99:41");
 }
 
 @test:Config
@@ -380,7 +386,7 @@ function testHttpClientSpanTags() returns error? {
     test:assertTrue(containsTag("http.url", httpClientSpanTagKeys));
     test:assertEquals(httpClientSpanTags["http.url"], "/test/sum");
     test:assertTrue(containsTag("otlp.instrumentation.library.name", httpClientSpanTagKeys));
-    test:assertEquals(httpClientSpanTags["otlp.instrumentation.library.name"], "jaeger");
+    test:assertEquals(httpClientSpanTags["otlp.instrumentation.library.name"], "amp");
     test:assertTrue(containsTag("peer.address", httpClientSpanTagKeys));
     test:assertEquals(httpClientSpanTags["peer.address"], "localhost:9091");
     test:assertTrue(containsTag("span.kind", httpClientSpanTagKeys));

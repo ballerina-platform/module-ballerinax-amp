@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/jballerina.java;
 import ballerina/observe;
 
-const PROVIDER_NAME = "jaeger";
+const PROVIDER_NAME = "amp";
 const DEFAULT_SAMPLER_TYPE = "const";
 
 configurable string otelEndpoint = "http://localhost:21893";
@@ -38,7 +38,7 @@ function init() {
         string selectedSamplerType;
         if (samplerType != "const" && samplerType != "ratelimiting" && samplerType != "probabilistic") {
             selectedSamplerType = DEFAULT_SAMPLER_TYPE;
-            io:println("error: invalid Jaeger configuration sampler type: " + samplerType
+            io:println("error: invalid Amp configuration sampler type: " + samplerType
                                                + ". using default " + DEFAULT_SAMPLER_TYPE + " sampling");
         } else {
             selectedSamplerType = samplerType;
@@ -52,6 +52,6 @@ function init() {
 function externInitializeConfigurations(string otelEndpoint, string samplerType,
         decimal samplerParam, int reporterFlushInterval, int reporterBufferSize, string apiKey,
         string serviceName, string orgUid, string projectUid, string componentUid, string environmentUid) = @java:Method {
-    'class: "io.ballerina.observe.trace.jaeger.JaegerTracerProvider",
+    'class: "io.ballerina.observe.trace.amp.AmpTracerProvider",
     name: "initializeConfigurations"
 } external;

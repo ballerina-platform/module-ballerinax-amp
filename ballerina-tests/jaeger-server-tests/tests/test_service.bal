@@ -16,7 +16,7 @@
 
 import ballerina/http;
 import ballerina/observe;
-import ballerinax/jaeger as _;
+import ballerinax/amp as _;
 
 service /test on new http:Listener(9091) {
     # Description.
