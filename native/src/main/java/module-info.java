@@ -7,6 +7,7 @@ module io.ballerina.observe.trace.extension.jaeger {
     requires io.opentelemetry.extension.trace.propagation;
     requires io.opentelemetry.semconv;
     requires io.opentelemetry.exporter.otlp;
+    requires io.opentelemetry.exporter.otlp.http.trace;
 
     provides io.ballerina.runtime.observability.tracer.spi.TracerProvider
             with io.ballerina.observe.trace.jaeger.JaegerTracerProvider;
