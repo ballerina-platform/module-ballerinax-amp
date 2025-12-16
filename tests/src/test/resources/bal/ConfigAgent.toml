@@ -3,5 +3,4 @@ tracingEnabled=true
 tracingProvider="jaeger"
 
 [ballerinax.jaeger]
-agentHostname="127.0.0.1"
-agentPort=16831
+otelEndpoint="http://127.0.0.1:16831"

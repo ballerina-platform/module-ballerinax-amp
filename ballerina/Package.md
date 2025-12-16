@@ -7,12 +7,15 @@ It provides an implementation for tracing and publishing traces to a Jaeger Agen
 ## Enabling Jaeger Extension
 
 To package the Jaeger extension into the Jar, follow the following steps.
+
 1. Add the following import to your program.
+
 ```ballerina
 import ballerinax/jaeger as _;
 ```
 
 2. Add the following to the `Ballerina.toml` when building your program.
+
 ```toml
 [package]
 org = "my_org"
@@ -24,12 +27,12 @@ observabilityIncluded=true
 ```
 
 To enable the extension and publish traces to Jaeger, add the following to the `Config.toml` when running your program.
+
 ```toml
 [ballerina.observe]
 tracingEnabled=true
 tracingProvider="jaeger"
 
 [ballerinax.jaeger]
-agentHostname="127.0.0.1"  # Optional Configuration. Default value is localhost
-agentPort=55680             # Optional Configuration. Default value is 55680
+otelEndpoint="http://localhost:21893"  # Optional Configuration. Default value is http://localhost:21893
 ```

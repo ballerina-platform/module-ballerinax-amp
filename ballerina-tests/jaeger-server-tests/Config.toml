@@ -3,5 +3,4 @@ tracingEnabled=true
 tracingProvider="jaeger"
 
 [ballerinax.jaeger]
-agentHostname="localhost"  # Optional Configuration. Default value is localhost
-agentPort=4317             # Optional Configuration. Default value is 4317
+otelEndpoint="http://localhost:4317"  # Optional Configuration. Default value is http://localhost:21893

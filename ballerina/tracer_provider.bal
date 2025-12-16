@@ -21,8 +21,13 @@ import ballerina/observe;
 const PROVIDER_NAME = "jaeger";
 const DEFAULT_SAMPLER_TYPE = "const";
 
-configurable string agentHostname = "localhost";
-configurable int agentPort = 21893;
+configurable string otelEndpoint = "http://localhost:21893";
+configurable string apiKey = "";
+configurable string serviceName = "";
+configurable string orgUid = "";
+configurable string projectUid = "";
+configurable string componentUid = "";
+configurable string environmentUid = "";
 configurable string samplerType = "const";
 configurable decimal samplerParam = 1;
 configurable int reporterFlushInterval = 1000;
@@ -39,13 +44,14 @@ function init() {
             selectedSamplerType = samplerType;
         }
 
-        externInitializeConfigurations(agentHostname, agentPort, selectedSamplerType, samplerParam,
-            reporterFlushInterval, reporterBufferSize);
+        externInitializeConfigurations(otelEndpoint, selectedSamplerType, samplerParam,
+            reporterFlushInterval, reporterBufferSize, apiKey, serviceName, orgUid, projectUid, componentUid, environmentUid);
     }
 }
 
-function externInitializeConfigurations(string agentHostname, int agentPort, string samplerType,
-        decimal samplerParam, int reporterFlushInterval, int reporterBufferSize) = @java:Method {
+function externInitializeConfigurations(string otelEndpoint, string samplerType,
+        decimal samplerParam, int reporterFlushInterval, int reporterBufferSize, string apiKey,
+        string serviceName, string orgUid, string projectUid, string componentUid, string environmentUid) = @java:Method {
     'class: "io.ballerina.observe.trace.jaeger.JaegerTracerProvider",
     name: "initializeConfigurations"
 } external;

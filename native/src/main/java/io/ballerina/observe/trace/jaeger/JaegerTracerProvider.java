@@ -22,10 +22,12 @@ import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.observability.tracer.spi.TracerProvider;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporterBuilder;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
@@ -46,6 +48,11 @@ public class JaegerTracerProvider implements TracerProvider {
 
     static SdkTracerProviderBuilder tracerProviderBuilder;
     static SdkTracerProvider sdkTracerProvider;
+    static String serviceName;
+    static String orgUid;
+    static String projectUid;
+    static String componentUid;
+    static String environmentUid;
 
     @Override
     public String getName() {
@@ -56,30 +63,50 @@ public class JaegerTracerProvider implements TracerProvider {
     public void init() {    // Do Nothing
     }
 
-    public static void initializeConfigurations(BString agentHostname, int agentPort, BString samplerType,
+    public static void initializeConfigurations(BString otelEndpoint, BString samplerType,
                                                 BDecimal samplerParam, int reporterFlushInterval,
-                                                int reporterBufferSize) {
-        initializeConfigurationsForTest(
-                agentHostname.toString(),
-                agentPort,
+                                                int reporterBufferSize, BString apiKey, BString serviceName,
+                                                BString orgUid, BString projectUid, BString componentUid,
+                                                BString environmentUid) {
+        initializeConfigurationsForInternal(
+                otelEndpoint.toString(),
                 samplerType.toString(),
                 samplerParam.value().doubleValue(),
                 reporterFlushInterval,
-                reporterBufferSize);
+                reporterBufferSize,
+                apiKey.toString(),
+                serviceName.toString(),
+                orgUid.toString(),
+                projectUid.toString(),
+                componentUid.toString(),
+                environmentUid.toString());
     }
 
     /**
      * Initialize configurations with plain Java types (for testing without Ballerina runtime).
      */
-    public static void initializeConfigurationsForTest(String agentHostname, int agentPort, String samplerType,
-                                                       double samplerParam, int reporterFlushInterval,
-                                                       int reporterBufferSize) {
+    public static void initializeConfigurationsForInternal(String otelEndpoint, String samplerType,
+                                                           double samplerParam, int reporterFlushInterval,
+                                                           int reporterBufferSize, String apiKey, String serviceName,
+                                                           String orgUid, String projectUid, String componentUid,
+                                                           String environmentUid) {
+        JaegerTracerProvider.serviceName = serviceName;
+        JaegerTracerProvider.orgUid = orgUid;
+        JaegerTracerProvider.projectUid = projectUid;
+        JaegerTracerProvider.componentUid = componentUid;
+        JaegerTracerProvider.environmentUid = environmentUid;
 
-        String reporterEndpoint = "http://" + agentHostname + ":" + agentPort + "/v1/traces";
+        String reporterEndpoint = otelEndpoint + "/v1/traces";
 
-        OtlpHttpSpanExporter exporter = OtlpHttpSpanExporter.builder()
-                .setEndpoint(reporterEndpoint)
-                .build();
+        OtlpHttpSpanExporterBuilder builder = OtlpHttpSpanExporter.builder()
+                .setEndpoint(reporterEndpoint);
+
+        if (!apiKey.isEmpty()) {
+            builder.addHeader("Authorization", "Bearer " + apiKey);
+        }
+
+        OtlpHttpSpanExporter exporter = builder.build();
+
 
         tracerProviderBuilder = SdkTracerProvider.builder()
                 .addSpanProcessor(BatchSpanProcessor
@@ -115,8 +142,26 @@ public class JaegerTracerProvider implements TracerProvider {
     }
 
     private static Tracer getTracerInternal(String serviceName) {
-        sdkTracerProvider = tracerProviderBuilder.setResource(
-                Resource.create(Attributes.of(SERVICE_NAME, "test-agpq4y")))
+        AttributesBuilder builder = Attributes.builder();
+        if (!JaegerTracerProvider.serviceName.isEmpty()) {
+            builder.put(SERVICE_NAME, JaegerTracerProvider.serviceName);
+        } else {
+            builder.put(SERVICE_NAME, serviceName);
+        }
+        if (!JaegerTracerProvider.orgUid.isEmpty()) {
+            builder.put("openchoreo.dev/org-uid", JaegerTracerProvider.orgUid);
+        }
+        if (!JaegerTracerProvider.projectUid.isEmpty()) {
+            builder.put("openchoreo.dev/project-uid", JaegerTracerProvider.projectUid);
+        }
+        if (!JaegerTracerProvider.componentUid.isEmpty()) {
+            builder.put("openchoreo.dev/component-uid", JaegerTracerProvider.componentUid);
+        }
+        if (!JaegerTracerProvider.environmentUid.isEmpty()) {
+            builder.put("openchoreo.dev/environment-uid", JaegerTracerProvider.environmentUid);
+        }
+        sdkTracerProvider = tracerProviderBuilder
+                .setResource(Resource.create(builder.build()))
                 .build();
         return sdkTracerProvider.get("jaeger");
     }
