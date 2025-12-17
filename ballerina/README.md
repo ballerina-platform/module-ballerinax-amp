@@ -34,5 +34,15 @@ tracingEnabled=true
 tracingProvider="amp"
 
 [ballerinax.amp]
-otelEndpoint="http://localhost:21893"  # Optional Configuration. Default value is http://localhost:21893
+# OpenTelemetry endpoint for Amp
+otelEndpoint="http://localhost:21893"  # Optional. Default: http://localhost:21893
+
+# Amp authentication and identification
+# If passed empty string these will not be added at all
+apiKey=""                              # Optional. API key for authentication send as header
+serviceName=""                         # Optional. Name of the service send as resource attribute
+orgUid=""                              # Optional. Organization UID send as resource attribute
+projectUid=""                          # Optional. Project UID send as resource attribute
+componentUid=""                        # Optional. Component UID send as resource attribute
+environmentUid=""                      # Optional. Environment UID send as resource attribute
 ```
