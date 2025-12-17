@@ -1,0 +1,7 @@
+[ballerina.observe]
+tracingEnabled=true
+tracingProvider="amp"
+
+[ballerinax.amp]
+samplerType="ratelimiting"
+samplerParam=3.0
