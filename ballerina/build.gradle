@@ -16,7 +16,7 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-description = 'Ballerina - Jaeger Extension - Ballerina Module'
+description = 'Ballerina - Amp Extension - Ballerina Module'
 
 configurations {
     nativeJar {
@@ -32,29 +32,19 @@ configurations {
 }
 
 dependencies {
-    nativeJar project(':jaeger-extension-native')
+    nativeJar project(':amp-extension-native')
 
     externalJars "io.opentelemetry:opentelemetry-api:${openTelemetryVersion}"
     externalJars "io.opentelemetry:opentelemetry-context:${openTelemetryVersion}"
-    externalJars "io.opentelemetry:opentelemetry-sdk-trace:${openTelemetryVersion}"
-    externalJars "io.opentelemetry:opentelemetry-sdk-common:${openTelemetryVersion}"
+    externalJars "io.opentelemetry:opentelemetry-sdk-trace:${openTelemetrySDKVersion}"
+    externalJars "io.opentelemetry:opentelemetry-sdk-common:${openTelemetrySDKVersion}"
     externalJars "io.opentelemetry.semconv:opentelemetry-semconv:${openTelemetrySemconvVersion}"
-    externalJars "io.opentelemetry:opentelemetry-proto:${openTelemetryProtoVersion}"
-    externalJars "io.opentelemetry:opentelemetry-exporter-otlp-trace:${openTelemetryExporterVersion}"
+    externalJars "io.opentelemetry:opentelemetry-exporter-otlp-http-trace:${openTelemetryExporterVersion}"
     externalJars "io.opentelemetry:opentelemetry-exporter-otlp-common:${openTelemetryExporterVersion}"
     externalJars "io.opentelemetry:opentelemetry-extension-trace-propagators:${openTelemetryVersion}"
-    externalJars "com.google.guava:guava:${guavaVersion}"
-    externalJars "com.google.guava:failureaccess:${failureAccessVersion}"
-    externalJars "io.grpc:grpc-api:${grpcVersion}"
-    externalJars "io.grpc:grpc-context:${grpcVersion}"
-    externalJars "io.grpc:grpc-core:${grpcVersion}"
-    externalJars "io.grpc:grpc-stub:${grpcVersion}"
-    externalJars "io.grpc:grpc-protobuf:${grpcVersion}"
-    externalJars "io.grpc:grpc-protobuf-lite:${grpcVersion}"
-    externalJars "io.grpc:grpc-netty-shaded:${grpcVersion}"
-    externalJars "com.google.protobuf:protobuf-java:${protobufVersion}"
-    externalJars "io.netty:netty-handler:${nettyVersion}"
-    externalJars "io.perfmark:perfmark-api:${perfmarkVersion}"
+    externalJars "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+    externalJars "com.squareup.okio:okio:${okioVersion}"
+    externalJars "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
 }
 
 clean {
@@ -75,7 +65,7 @@ task copyExternalJarsToLib(type: Copy) {
 }
 
 def packageOrg = "ballerinax"
-def packageName = "jaeger"
+def packageName = "amp"
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
 def artifactCacheParent = file("${project.buildDir}/cache_parent/")
@@ -105,29 +95,21 @@ task updateTomlVersions {
     doLast {
         def openTelemetryVersion = project.openTelemetryVersion
         def openTelemetrySDKVersion = project.openTelemetrySDKVersion
-        def openTelemetryExporterVersion = project.openTelemetryExporterVersion
         def openTelemetrySemconvVersion = project.openTelemetrySemconvVersion
-        def openTelemetryProtoVersion = project.openTelemetryProtoVersion
-        def guavaVersion = project.guavaVersion
-        def failureAccessVersion = project.failureAccessVersion
-        def grpcVersion = project.grpcVersion
-        def nettyVersion = project.nettyVersion
-        def protobufVersion = project.protobufVersion
-        def perfmarkVersion = project.perfmarkVersion
+        def openTelemetryExporterVersion = project.openTelemetryExporterVersion
+        def okhttpVersion = project.okhttpVersion
+        def okioVersion = project.okioVersion
+        def kotlinVersion = project.kotlinVersion
 
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@opentelemetry.version@", openTelemetryVersion)
         newConfig = newConfig.replace("@opentelemetrySDK.version@", openTelemetrySDKVersion)
-        newConfig = newConfig.replace("@opentelemetryExporter.version@", openTelemetryExporterVersion)
         newConfig = newConfig.replace("@opentelemetrySemconv.version@", openTelemetrySemconvVersion)
-        newConfig = newConfig.replace("@opentelemetryProto.version@", openTelemetryProtoVersion)
-        newConfig = newConfig.replace("@guava.version@", guavaVersion)
-        newConfig = newConfig.replace("@failureAccess.version@", failureAccessVersion)
-        newConfig = newConfig.replace("@grpc.version@", grpcVersion)
-        newConfig = newConfig.replace("@netty.version@", nettyVersion)
-        newConfig = newConfig.replace("@protobuf.version@", protobufVersion)
-        newConfig = newConfig.replace("@perfmark.version@", perfmarkVersion)
+        newConfig = newConfig.replace("@opentelemetryExporter.version@", openTelemetryExporterVersion)
+        newConfig = newConfig.replace("@okhttp.version@", okhttpVersion)
+        newConfig = newConfig.replace("@okio.version@", okioVersion)
+        newConfig = newConfig.replace("@kotlin.version@", kotlinVersion)
         ballerinaConfigFile.text = newConfig
     }
 }
@@ -151,7 +133,7 @@ task ballerinaBuild {
     dependsOn spotbugsMain
     dependsOn spotbugsTest
     dependsOn test
-    dependsOn ":jaeger-extension-ballerina:generatePomFileForMavenJavaPublication"
+    dependsOn ":amp-extension-ballerina:generatePomFileForMavenJavaPublication"
 
     inputs.dir file(project.projectDir)
     if (skipTests) {
@@ -222,7 +204,7 @@ artifacts {
 task ballerinaPublish {
     dependsOn updateTomlVersions
     dependsOn ballerinaBuild
-    dependsOn ":jaeger-extension-ballerina:generatePomFileForMavenJavaPublication"
+    dependsOn ":amp-extension-ballerina:generatePomFileForMavenJavaPublication"
 
     finalizedBy(revertTomlFile)
 

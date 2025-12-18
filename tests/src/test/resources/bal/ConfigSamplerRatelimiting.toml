@@ -1,7 +1,7 @@
 [ballerina.observe]
 tracingEnabled=true
-tracingProvider="jaeger"
+tracingProvider="amp"
 
-[ballerinax.jaeger]
+[ballerinax.amp]
 samplerType="ratelimiting"
 samplerParam=3.0

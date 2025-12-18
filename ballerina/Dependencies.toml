@@ -5,12 +5,12 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.11.0"
+distribution-version = "2201.13.1"
 
 [[package]]
 org = "ballerina"
 name = "io"
-version = "1.7.0"
+version = "1.8.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
@@ -38,7 +38,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "observe"
-version = "1.4.0"
+version = "1.7.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -49,7 +49,7 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "jaeger"
+name = "amp"
 version = "1.0.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
@@ -57,6 +57,6 @@ dependencies = [
 	{org = "ballerina", name = "observe"}
 ]
 modules = [
-	{org = "ballerinax", packageName = "jaeger", moduleName = "jaeger"}
+	{org = "ballerinax", packageName = "amp", moduleName = "amp"}
 ]
 

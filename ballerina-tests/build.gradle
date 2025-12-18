@@ -18,7 +18,7 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-description = 'Ballerina - Jaeger Extension - Ballerina Tests'
+description = 'Ballerina - Amp Extension - Ballerina Tests'
 
 configurations {
     nativeJar {
@@ -54,7 +54,7 @@ def testParams = "--code-coverage --coverage-format=xml"
 def nativeFlag = ""
 
 def packageOrg = "ballerinax"
-def packageName = "jaeger"
+def packageName = "amp"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def testPackages = ["jaeger-server-tests"]
 
@@ -78,7 +78,7 @@ def stripBallerinaExtensionVersion(String extVersion) {
 def skipTests = false
 
 gradle.taskGraph.whenReady { graph ->
-    if (graph.hasTask(":jaeger-extension-ballerina-tests:ballerinaTest")) {
+    if (graph.hasTask(":amp-extension-ballerina-tests:ballerinaTest")) {
         skipTests = true
     }
 }
@@ -110,7 +110,7 @@ task initializeVariables {
 }
 
 task updateTomlVerions {
-    dependsOn ":jaeger-extension-ballerina:ballerinaBuild"
+    dependsOn ":amp-extension-ballerina:ballerinaBuild"
 
     doLast {
         def newConfig = jaegerServerTestConfigFile.text.replace("@toml.version@", tomlVersion)
@@ -119,7 +119,7 @@ task updateTomlVerions {
 }
 
 task startJaegerServer() {
-    dependsOn ":jaeger-extension-ballerina:ballerinaBuild"
+    dependsOn ":amp-extension-ballerina:ballerinaBuild"
 
     doLast {
         // This check is added to prevent starting the server in Windows OS, since the Docker image does not support
@@ -131,16 +131,16 @@ task startJaegerServer() {
                 standardOutput = stdOut
             }
             if (!stdOut.toString().contains("jaeger-server")) {
-                println "Starting Jaeger server."
+                println "Starting Amp server."
                 exec {
                     commandLine 'sh', '-c', "docker compose -f $project.projectDir/resources/jaeger-server/docker-compose.yml up -d"
                     standardOutput = stdOut
                 }
                 println stdOut.toString()
-                println "Waiting 15s until the Jaeger server get initiated."
+                println "Waiting 15s until the Amp server get initiated."
                 sleep(15 * 1000)
             } else {
-                println "Jaeger server is already started."
+                println "Amp server is already started."
             }
         }
     }
@@ -163,10 +163,10 @@ task stopJaegerServer() {
                     standardOutput = stdOut
                 }
                 println stdOut.toString()
-                println "Waiting 5s until the Jaeger server get stopped."
+                println "Waiting 5s until the Amp server get stopped."
                 sleep(5 * 1000)
             } else {
-                println "Jaeger server is not started."
+                println "Amp server is not started."
             }
         }
     }
@@ -179,8 +179,8 @@ task revertTomlFile {
 }
 
 task ballerinaTest {
-    dependsOn ":jaeger-extension-ballerina:ballerinaBuild"
-    dependsOn ":jaeger-extension-ballerina:publishBalaFileToLocal"
+    dependsOn ":amp-extension-ballerina:ballerinaBuild"
+    dependsOn ":amp-extension-ballerina:publishBalaFileToLocal"
     dependsOn initializeVariables
     dependsOn updateTomlVerions
     dependsOn startJaegerServer

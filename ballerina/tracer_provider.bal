@@ -18,11 +18,16 @@ import ballerina/io;
 import ballerina/jballerina.java;
 import ballerina/observe;
 
-const PROVIDER_NAME = "jaeger";
+const PROVIDER_NAME = "amp";
 const DEFAULT_SAMPLER_TYPE = "const";
 
-configurable string agentHostname = "localhost";
-configurable int agentPort = 55680;
+configurable string otelEndpoint = "http://localhost:21893";
+configurable string apiKey = "";
+configurable string serviceName = "";
+configurable string orgUid = "";
+configurable string projectUid = "";
+configurable string componentUid = "";
+configurable string environmentUid = "";
 configurable string samplerType = "const";
 configurable decimal samplerParam = 1;
 configurable int reporterFlushInterval = 1000;
@@ -33,19 +38,20 @@ function init() {
         string selectedSamplerType;
         if (samplerType != "const" && samplerType != "ratelimiting" && samplerType != "probabilistic") {
             selectedSamplerType = DEFAULT_SAMPLER_TYPE;
-            io:println("error: invalid Jaeger configuration sampler type: " + samplerType
+            io:println("error: invalid Amp configuration sampler type: " + samplerType
                                                + ". using default " + DEFAULT_SAMPLER_TYPE + " sampling");
         } else {
             selectedSamplerType = samplerType;
         }
 
-        externInitializeConfigurations(agentHostname, agentPort, selectedSamplerType, samplerParam,
-            reporterFlushInterval, reporterBufferSize);
+        externInitializeConfigurations(otelEndpoint, selectedSamplerType, samplerParam,
+            reporterFlushInterval, reporterBufferSize, apiKey, serviceName, orgUid, projectUid, componentUid, environmentUid);
     }
 }
 
-function externInitializeConfigurations(string agentHostname, int agentPort, string samplerType,
-        decimal samplerParam, int reporterFlushInterval, int reporterBufferSize) = @java:Method {
-    'class: "io.ballerina.observe.trace.jaeger.JaegerTracerProvider",
+function externInitializeConfigurations(string otelEndpoint, string samplerType,
+        decimal samplerParam, int reporterFlushInterval, int reporterBufferSize, string apiKey,
+        string serviceName, string orgUid, string projectUid, string componentUid, string environmentUid) = @java:Method {
+    'class: "io.ballerina.observe.trace.amp.AmpTracerProvider",
     name: "initializeConfigurations"
 } external;

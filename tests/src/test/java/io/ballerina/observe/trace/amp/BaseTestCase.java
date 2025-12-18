@@ -15,11 +15,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.ballerina.observe.trace.jaeger;
+package io.ballerina.observe.trace.amp;
 
-import io.ballerina.observe.trace.jaeger.backend.ContainerizedJaegerServer;
-import io.ballerina.observe.trace.jaeger.backend.JaegerServer;
-import io.ballerina.observe.trace.jaeger.backend.ProcessJaegerServer;
+import io.ballerina.observe.trace.amp.backend.ContainerizedJaegerServer;
+import io.ballerina.observe.trace.amp.backend.JaegerServer;
+import io.ballerina.observe.trace.amp.backend.ProcessJaegerServer;
 import org.ballerinalang.test.context.BalServer;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;

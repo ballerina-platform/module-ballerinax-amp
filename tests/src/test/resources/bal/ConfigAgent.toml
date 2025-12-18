@@ -1,7 +1,6 @@
 [ballerina.observe]
 tracingEnabled=true
-tracingProvider="jaeger"
+tracingProvider="amp"
 
-[ballerinax.jaeger]
-agentHostname="127.0.0.1"
-agentPort=16831
+[ballerinax.amp]
+otelEndpoint="http://127.0.0.1:16831"

@@ -18,17 +18,17 @@ plugins {
     id "com.gradle.enterprise" version "3.2"
 }
 
-rootProject.name = 'module-ballerinax-jaeger'
+rootProject.name = 'module-ballerinax-amp'
 
 include(':build-config:checkstyle')
-include(':jaeger-extension-ballerina')
-include(':jaeger-extension-native')
-include(':jaeger-extension-tests')
+include(':amp-extension-ballerina')
+include(':amp-extension-native')
+include(':amp-extension-tests')
 
 project(':build-config:checkstyle').projectDir = file('build-config/checkstyle')
-project(':jaeger-extension-ballerina').projectDir = file('ballerina')
-project(':jaeger-extension-native').projectDir = file('native')
-project(':jaeger-extension-tests').projectDir = file('ballerina-tests')
+project(':amp-extension-ballerina').projectDir = file('ballerina')
+project(':amp-extension-native').projectDir = file('native')
+project(':amp-extension-tests').projectDir = file('ballerina-tests')
 
 gradleEnterprise {
     buildScan {

@@ -18,7 +18,7 @@ plugins {
     id 'java-library'
 }
 
-description = 'Ballerina - Jaeger Extension - Native Module'
+description = 'Ballerina - Amp Extension - Native Module'
 
 dependencies {
     implementation "org.ballerinalang:ballerina-runtime:${ballerinaLangVersion}"
@@ -26,41 +26,9 @@ dependencies {
     implementation "io.opentelemetry:opentelemetry-sdk-trace:${openTelemetrySDKVersion}"
     implementation "io.opentelemetry:opentelemetry-sdk-common:${openTelemetrySDKVersion}"
     implementation "io.opentelemetry.semconv:opentelemetry-semconv:${openTelemetrySemconvVersion}"
-    implementation "io.opentelemetry:opentelemetry-exporter-otlp-trace:${openTelemetryExporterVersion}"
+    implementation "io.opentelemetry:opentelemetry-exporter-otlp:${openTelemetryExporterVersion}"
+    implementation "io.opentelemetry:opentelemetry-exporter-otlp-http-trace:${openTelemetryExporterVersion}"
     implementation "io.opentelemetry:opentelemetry-extension-trace-propagators:${openTelemetryVersion}"
-    implementation "io.opentelemetry:opentelemetry-sdk-extension-jaeger-remote-sampler:${openTelemetrySDKVersion}"
-
-    implementation("com.google.guava:guava:${guavaVersion}") {
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("com.google.guava:failureaccess:${failureAccessVersion}")
-    implementation("io.grpc:grpc-api:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("io.grpc:grpc-core:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("io.grpc:grpc-stub:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("io.grpc:grpc-protobuf:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("io.grpc:grpc-protobuf-lite:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation("io.grpc:grpc-netty-shaded:${grpcVersion}") {
-        exclude group: 'io.grpc', module: 'grpc-context'
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
-    implementation("io.netty:netty-handler:${nettyVersion}")
-    implementation "io.perfmark:perfmark-api:${perfmarkVersion}"
 }
 
 compileJava {
@@ -82,7 +50,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
-            artifactId "jaeger-extension-native"
+            artifactId "amp-extension-native"
             version = project.version
             artifact jar
         }

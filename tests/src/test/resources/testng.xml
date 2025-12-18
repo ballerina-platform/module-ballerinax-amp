@@ -19,15 +19,15 @@
   -->
 
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Ballerina Jaeger Extension Tests Suite" parallel="false">
+<suite name="Ballerina Amp Extension Tests Suite" parallel="false">
     <listeners>
         <listener class-name="org.ballerinalang.test.listener.TestExecutionListener"/>
         <listener class-name="org.ballerinalang.test.listener.TestNGListener"/>
     </listeners>
 
-    <test name="ballerina-jaeger-extension-tests" parallel="false">
+    <test name="ballerina-amp-extension-tests" parallel="false">
         <classes>
-            <class name="io.ballerina.observe.trace.jaeger.JaegerTracesTestCase"/>
+            <class name="io.ballerina.observe.trace.amp.AmpTracesTestCase"/>
         </classes>
     </test>
 </suite>
