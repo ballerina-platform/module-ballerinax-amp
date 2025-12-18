@@ -136,9 +136,7 @@ task ballerinaBuild {
     dependsOn ":amp-extension-ballerina:generatePomFileForMavenJavaPublication"
 
     inputs.dir file(project.projectDir)
-    if (skipTests) {
-        finalizedBy(revertTomlFile)
-    }
+    finalizedBy(revertTomlFile)
 
     doLast {
         def additionalBuildParams = ""
