@@ -21,7 +21,7 @@ import ballerina/observe;
 const PROVIDER_NAME = "amp";
 const DEFAULT_SAMPLER_TYPE = "const";
 
-configurable string otelEndpoint = "http://localhost:21893";
+configurable string otelEndpoint = "http://localhost:22893/otel";
 configurable string apiKey = "";
 configurable string serviceName = "";
 configurable string orgUid = "";
