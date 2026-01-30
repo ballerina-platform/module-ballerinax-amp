@@ -102,7 +102,7 @@ public class AmpTracerProvider implements TracerProvider {
                 .setEndpoint(reporterEndpoint);
 
         if (!apiKey.isEmpty()) {
-            builder.addHeader("Authorization", "Bearer " + apiKey);
+            builder.addHeader("x-amp-api-key", apiKey);
         }
 
         OtlpHttpSpanExporter exporter = builder.build();

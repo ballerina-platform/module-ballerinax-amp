@@ -42,7 +42,6 @@ otelEndpoint="http://localhost:21893"  # Optional. Default: http://localhost:218
 # Amp authentication and identification (optional)
 # If passed empty string (default value) these will not be added.
 apiKey=""          # API key for authentication send via Authorization header
-serviceName=""     # Name of the service send as a resource attribute
 orgUid=""          # Organization UID send as a resource attribute
 projectUid=""      # Project UID send as a resource attribute
 componentUid=""    # Component UID send as a resource attribute
