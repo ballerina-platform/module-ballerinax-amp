@@ -1,8 +1,13 @@
-## Package Overview
+## Overview
 
-The Amp Observability Extension is one of the tracing extensions of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
+The Amp Observability Extension provides an implementation for tracing and publishing traces to a WSO2 AI Agent Platform using the OpenTelemetry Protobuf HTTP endpoint.
 
-It provides an implementation for tracing and publishing traces to a WSO2 AI Agent Platform using OpenTelemetry Protobuf HTTP endpoint.
+### Key Features
+
+- Publish traces to WSO2 AI Agent Platform via OpenTelemetry
+- Support for API key-based authentication
+- Configurable organization, project, component, and environment identifiers
+- Compatible with AI agent tracing workflows
 
 ## Enabling Amp Extension
 
