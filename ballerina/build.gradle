@@ -15,6 +15,13 @@
  */
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.process.ExecOperations
+
+import javax.inject.Inject
+
+abstract class BallerinaExecHelper {
+    @Inject abstract ExecOperations getExecOperations()
+}
 
 description = 'Ballerina - Amp Extension - Ballerina Module'
 
@@ -68,8 +75,8 @@ def packageOrg = "ballerinax"
 def packageName = "amp"
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
-def artifactCacheParent = file("${project.buildDir}/cache_parent/")
-def artifactLibParent = file("${project.buildDir}/lib_parent/")
+def artifactCacheParent = file("${layout.buildDirectory.get().asFile}/cache_parent/")
+def artifactLibParent = file("${layout.buildDirectory.get().asFile}/lib_parent/")
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def originalConfig = ballerinaConfigFile.text
@@ -167,7 +174,7 @@ task ballerinaBuild {
 
         copy {
             from file("$project.projectDir/target/apidocs/${packageName}")
-            into file("$project.buildDir/docs_parent/docs/${packageName}")
+            into file("${layout.buildDirectory.get().asFile}/docs_parent/docs/${packageName}")
         }
 
         boolean publishToCentral = project.hasProperty('publishToCentral') ? project.publishToCentral.toBoolean() : false
@@ -191,7 +198,7 @@ task ballerinaBuild {
 }
 
 task createArtifactZip(type: Zip) {
-    destinationDirectory = file("${project.buildDir}/distributions")
+    destinationDirectory = layout.buildDirectory.dir("distributions")
     from ballerinaBuild
 }
 
@@ -264,7 +271,8 @@ task publishBalaFileToLocal {
 
     doLast {
         if (!skipTests) {
-            exec {
+            def execHelper = project.objects.newInstance(BallerinaExecHelper)
+            execHelper.execOperations.exec {
                 workingDir "${project.rootDir}/ballerina"
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                     commandLine 'cmd', '/c', "bal.bat push --repository=local" +

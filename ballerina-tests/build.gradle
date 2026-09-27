@@ -17,6 +17,13 @@
  */
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.process.ExecOperations
+
+import javax.inject.Inject
+
+abstract class BallerinaExecHelper {
+    @Inject abstract ExecOperations getExecOperations()
+}
 
 description = 'Ballerina - Amp Extension - Ballerina Tests'
 
@@ -125,14 +132,15 @@ task startJaegerServer() {
         // This check is added to prevent starting the server in Windows OS, since the Docker image does not support
         // for Windows OS.
         if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            def execHelper = project.objects.newInstance(BallerinaExecHelper)
             def stdOut = new ByteArrayOutputStream()
-            exec {
+            execHelper.execOperations.exec {
                 commandLine 'sh', '-c', "docker ps --filter name=jaeger-server"
                 standardOutput = stdOut
             }
             if (!stdOut.toString().contains("jaeger-server")) {
                 println "Starting Amp server."
-                exec {
+                execHelper.execOperations.exec {
                     commandLine 'sh', '-c', "docker compose -f $project.projectDir/resources/jaeger-server/docker-compose.yml up -d"
                     standardOutput = stdOut
                 }
@@ -151,14 +159,15 @@ task stopJaegerServer() {
         // This check is added to prevent trying to stop the server in Windows OS, since the Docker image not started
         // in Windows OS.
         if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            def execHelper = project.objects.newInstance(BallerinaExecHelper)
             def stdOut = new ByteArrayOutputStream()
-            exec {
+            execHelper.execOperations.exec {
                 commandLine 'sh', '-c', "docker ps --filter name=jaeger-server"
                 standardOutput = stdOut
             }
             if (stdOut.toString().contains("jaeger-server")) {
                 println "Stopping LDAP server."
-                exec {
+                execHelper.execOperations.exec {
                     commandLine 'sh', '-c', "docker stop jaeger-server"
                     standardOutput = stdOut
                 }
