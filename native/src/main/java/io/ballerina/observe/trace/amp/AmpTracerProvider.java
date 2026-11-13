@@ -21,6 +21,7 @@ import io.ballerina.observe.trace.amp.sampler.RateLimitingSampler;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.observability.tracer.spi.TracerProvider;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Tracer;
@@ -37,13 +38,12 @@ import io.opentelemetry.sdk.trace.samplers.Sampler;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 
-import static io.opentelemetry.semconv.ResourceAttributes.SERVICE_NAME;
-
 /**
  * This is the Amp tracing extension class for {@link TracerProvider}.
  */
 public class AmpTracerProvider implements TracerProvider {
     private static final String TRACER_NAME = "amp";
+    private static final AttributeKey<String> SERVICE_NAME = AttributeKey.stringKey("service.name");
     private static final PrintStream console = System.out;
 
     static SdkTracerProviderBuilder tracerProviderBuilder;

@@ -20,15 +20,17 @@ plugins {
 
 description = 'Ballerina - Amp Extension - Native Module'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
 dependencies {
     implementation "org.ballerinalang:ballerina-runtime:${ballerinaLangVersion}"
     implementation "io.opentelemetry:opentelemetry-context:${openTelemetryVersion}"
     implementation "io.opentelemetry:opentelemetry-sdk-trace:${openTelemetrySDKVersion}"
     implementation "io.opentelemetry:opentelemetry-sdk-common:${openTelemetrySDKVersion}"
-    implementation "io.opentelemetry.semconv:opentelemetry-semconv:${openTelemetrySemconvVersion}"
-    implementation "io.opentelemetry:opentelemetry-exporter-otlp:${openTelemetryExporterVersion}"
-    implementation "io.opentelemetry:opentelemetry-exporter-otlp-http-trace:${openTelemetryExporterVersion}"
-    implementation "io.opentelemetry:opentelemetry-extension-trace-propagators:${openTelemetryVersion}"
+    implementation "io.opentelemetry:opentelemetry-exporter-otlp:${openTelemetryVersion}"
 }
 
 compileJava {
