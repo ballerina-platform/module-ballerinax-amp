@@ -3,24 +3,19 @@
   "listeners": [
     {
       "id": "$listener",
-      "doc": "Serves amp:ChatService services over HTTP, so the WSO2 Agent Manager console's Try It page can chat with the agent. Listens on the given port, else 8000, or shares an existing http:Listener. Each service is attached to the underlying http:Listener directly, so it remains the entrypoint of the traces it produces.",
+      "doc": "Serves an amp:ChatService over HTTP, so the Choreo Agent Manager console's Try It page can chat with the agent. Listens on the given port, else 8000, or shares an existing http:Listener. The service is attached to the underlying http:Listener directly, so it remains the entrypoint of the traces it produces. Agent Manager runs one agent per integration, so a listener serves one chat service.",
       "type": { "name": "Listener" },
       "services": ["$service"],
-      "multipleServicesAllowed": true,
-      "multipleServicesOfSameTypeAllowed": true
+      "multipleServicesAllowed": false
     }
   ],
   "serviceTypes": [
     {
       "id": "$service",
-      "doc": "Exposes an agent through the POST /chat endpoint that the WSO2 Agent Manager console calls. The request carries the session ID, the user's message and optional context; the reply carries the agent's response. Agent Manager calls /chat at the root of the agent's endpoint, so the service is usually attached at the root base path.",
+      "doc": "Exposes an agent through the POST /chat endpoint that the Choreo Agent Manager console calls. The request carries the session ID, the user's message and optional context; the reply carries the agent's response. It is always attached at the root base path, because Agent Manager calls /chat at the root of the agent's endpoint.",
       "type": { "name": "ChatService" },
       "concrete": false,
       "multipleListenersAllowed": false,
-      "identifier": {
-        "presence": "optional",
-        "form": ["basePath"]
-      },
       "handlers": {
         "backedByConcreteType": false,
         "options": [

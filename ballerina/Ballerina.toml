@@ -20,6 +20,7 @@ name = "amp"
 version = "@toml.version@"
 distribution = "2201.14.0"
 include = ["metadata/**"]
+icon = "icon.png"
 
 [platform.java25]
 graalvmCompatible = true

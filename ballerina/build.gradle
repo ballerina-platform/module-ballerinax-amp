@@ -73,7 +73,9 @@ def packageOrg = "ballerinax"
 def packageName = "amp"
 def ballerinaConfigFile = new File("${project.projectDir}/Ballerina.toml")
 def artifactBallerinaDocs = file("${project.projectDir}/build/docs_parent/")
-def artifactCacheParent = file("${layout.buildDirectory.get().asFile}/cache_parent/")
+// Outside this package's directory: bal pack would otherwise pick up the bala unpacked here, since
+// `include = ["metadata/**"]` in Ballerina.toml matches a metadata directory at any depth.
+def artifactCacheParent = file("${rootProject.layout.buildDirectory.get().asFile}/amp-extension-ballerina/cache_parent/")
 def artifactLibParent = file("${layout.buildDirectory.get().asFile}/lib_parent/")
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')

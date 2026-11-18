@@ -4,9 +4,9 @@
     "kind": "ai"
   },
   "trigger": {
-    "displayName": "WSO2 Agent Manager Chat Service",
+    "displayName": "Choreo Agent Manager Chat Service",
     "shortDisplayName": "Agent Manager",
-    "description": "Create a chat service that WSO2 Agent Manager calls to chat with the agent.",
+    "description": "Create a chat service that Choreo Agent Manager calls to chat with the agent.",
     "type": "amp"
   },
   "readOnlyMetadata": [
@@ -16,41 +16,6 @@
       "extractor": "SERVICE_BASE_PATH"
     }
   ],
-  "initForm": {
-    "fields": [
-      {
-        "target": "$service",
-        "metadata": {
-          "label": "Service Path",
-          "description": "The base path the chat service is served on. Agent Manager calls /chat at the root of the agent's endpoint, so keep / unless the agent's endpoint in Agent Manager includes a path."
-        },
-        "state": {
-          "enabled": true,
-          "editable": true,
-          "optional": false,
-          "advanced": false
-        },
-        "key": "identifier",
-        "placeholder": "/",
-        "default": "/",
-        "widget": {
-          "widgetKind": "SERVICE_PATH",
-          "selected": true,
-          "ballerinaType": "string"
-        },
-        "validations": [
-          {
-            "rule": "common.validate.required"
-          }
-        ],
-        "source": {
-          "construct": {
-            "kind": "SERVICE_BASE_PATH"
-          }
-        }
-      }
-    ]
-  },
   "listeners": [
     {
       "target": "$listener",
@@ -61,24 +26,18 @@
       "form": {
         "section": {
           "label": "Agent Manager Listener",
-          "description": "Attach the agent to a new or existing Agent Manager listener."
+          "description": "Serve the agent on a new Agent Manager listener."
         },
         "createNew": {
           "label": "Create New Listener",
           "description": "Define a new Agent Manager listener in the project."
         },
-        "useExisting": {
-          "label": "Use Existing Listener",
-          "description": "Attach to an Agent Manager listener already declared in the project."
-        },
         "listenerConfig": {
           "label": "Listener Configuration",
           "description": "Configure the Agent Manager listener."
         },
-        "existingListener": {
-          "label": "Listener",
-          "description": "Select an existing Agent Manager listener to attach the agent to."
-        }
+        "useExistingEnabled": false,
+        "useExistingEditable": false
       },
       "formFields": {
         "listenerVarName": {
@@ -98,16 +57,15 @@
         "listenOn": {
           "key": "listenOn",
           "placeholder": "8000",
-          "default": "8000",
           "metadata": {
             "label": "Port",
-            "description": "The port to listen on, or an existing http:Listener to share. Use the port the agent is configured with in Agent Manager."
+            "description": "The port to listen on, or an existing http:Listener to share. Leave it empty to use 8000, which is what Agent Manager expects."
           },
           "state": {
             "enabled": true,
             "editable": true,
             "optional": true,
-            "advanced": false
+            "advanced": true
           }
         }
       }
@@ -117,8 +75,8 @@
     {
       "target": "$service",
       "metadata": {
-        "label": "WSO2 Agent Manager Chat Service",
-        "description": "Handles chat messages from WSO2 Agent Manager through a fixed POST /chat resource."
+        "label": "Choreo Agent Manager Chat Service",
+        "description": "Handles chat messages from Choreo Agent Manager through a fixed POST /chat resource."
       },
       "handlers": [
         {
@@ -158,7 +116,7 @@
     }
   ],
   "artifactInfo": {
-    "displayLabel": "WSO2 Agent Manager Chat Service",
+    "displayLabel": "Choreo Agent Manager Chat Service",
     "icon": {
       "lightPath": "icons/light.svg",
       "darkPath": "icons/dark.svg"

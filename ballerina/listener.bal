@@ -35,7 +35,7 @@ public class Listener {
     # chat services on the same port as the program's other HTTP services.
     #
     # + listenOn - The port to listen on, or the `http:Listener` to attach services to. Defaults to 8000,
-    #              the port WSO2 Agent Manager calls
+    #              the port Choreo Agent Manager calls
     # + return - An error if a new `http:Listener` could not be created on the given port
     public function init(int|http:Listener listenOn = 8000) returns error? {
         if listenOn is http:Listener {

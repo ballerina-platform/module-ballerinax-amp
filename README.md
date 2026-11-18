@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-amp/branch/main/graph/badge.svg?token=5GCQ36HBEB)](https://codecov.io/gh/ballerina-platform/module-ballerinax-amp)
 
-The `ballerinax/amp` package connects Ballerina AI agents to WSO2 Agent Manager. It provides:
+The `ballerinax/amp` package connects Ballerina AI agents to Choreo Agent Manager. It provides:
 
 - **Tracing**: an observability extension that publishes an agent's traces to Agent Manager through the OpenTelemetry Protobuf HTTP endpoint.
 - **Chat service**: `amp:Listener` and `amp:ChatService`, which expose an agent through the `POST /chat` endpoint that the Agent Manager console's Try It page calls.
